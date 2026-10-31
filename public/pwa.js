@@ -33,7 +33,12 @@ if (isIos && installButton) {
 }
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).catch(() => {});
+  window.addEventListener('load', async () => {
+    const registrations = await navigator.serviceWorker.getRegistrations().catch(() => []);
+    await Promise.all(registrations.map((registration) => registration.unregister()));
+    if ('caches' in window) {
+      const keys = await caches.keys().catch(() => []);
+      await Promise.all(keys.map((key) => caches.delete(key)));
+    }
   });
 }
