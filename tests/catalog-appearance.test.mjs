@@ -30,3 +30,12 @@ test('catalog rejects external and traversal paths for brand images', () => {
   input.restaurant.heroImageUrl = 'https://example.com/large-image.png';
   assert.throws(() => normalizeCatalog(input), /imagens da loja/);
 });
+
+test('catalog accepts bundled storefront product images and rejects traversal', () => {
+  const input = emptyInput();
+  input.categories = [{ id: 'casual', name: 'Casual' }];
+  input.products = [{ id: 'camiseta', categoryId: 'casual', name: 'Camiseta', priceCents: 8900, imageUrl: '/images/products/tee.webp' }];
+  assert.equal(normalizeCatalog(input).products[0].imageUrl, '/images/products/tee.webp');
+  input.products[0].imageUrl = '/images/products/../../private.png';
+  assert.throws(() => normalizeCatalog(input), /fotos precisam ser enviadas/);
+});

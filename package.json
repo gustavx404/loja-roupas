@@ -10,6 +10,7 @@
     "start": "netlify dev",
     "dev": "netlify dev",
     "test": "node --test",
+    "catalog:seed": "node scripts/seed-storefront-catalog.mjs",
     "admin:create": "node scripts/create-admin.mjs",
     "admin:reset": "node scripts/reset-admin.mjs"
   },

@@ -72,7 +72,7 @@ export function normalizeCatalog(input) {
     productIds.add(id);
     if (product.categoryId && !categoryIds.has(product.categoryId)) throw new Error('Uma categoria de produto não existe.');
     if (!optionalText(product.description, 500) || !optionalText(product.imageUrl, 600)) throw new Error('Confira a descrição ou foto de um produto.');
-    if (product.imageUrl && (!/^\/media\/[\w.-]+$/.test(product.imageUrl) || /(?:^|\/)\.\.(?:\/|$)/.test(product.imageUrl))) {
+    if (product.imageUrl && (!/^\/(?:media\/[\w.-]+|images\/[\w./-]+)$/.test(product.imageUrl) || /(?:^|\/)\.\.(?:\/|$)/.test(product.imageUrl))) {
       throw new Error('As fotos precisam ser enviadas pelo painel.');
     }
 
