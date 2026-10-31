@@ -248,7 +248,10 @@ async function loadStoreCatalog() {
         deliveryInfo.hidden = false;
       }
       if (restaurant.announcement) document.querySelector('#announcement').textContent = restaurant.announcement;
-      if (restaurant.heroTitle) document.querySelector('#hero-title').textContent = restaurant.heroTitle;
+      // Keep the designed line break and accent markup for the storefront default.
+      if (restaurant.heroTitle && restaurant.heroTitle !== 'Do seu jeito. No seu ritmo.') {
+        document.querySelector('#hero-title').textContent = restaurant.heroTitle;
+      }
       if (restaurant.heroDescription) document.querySelector('#hero-description').textContent = restaurant.heroDescription;
       if (restaurant.heroImageUrl) {
         const heroImage = document.querySelector('.hero-photo');
