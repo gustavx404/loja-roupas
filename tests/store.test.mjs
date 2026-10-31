@@ -20,6 +20,11 @@ test('size flow uses an accessible dialog and never invokes browser alerts', () 
   assert.doesNotMatch(script, /\b(?:prompt|alert)\s*\(/);
 });
 
+test('store footer exposes the Netlify administrator route', () => {
+  assert.match(page, /href="\/admin"/);
+  assert.match(page, /Área administrativa/);
+});
+
 test('adding a size updates cart state and checkout summary', () => {
   assert.match(script, /cart\.push\(\{product:selectedProduct,size:selectedSize,qty:1\}\)/);
   assert.match(script, /cart\.reduce\(\(s,i\)=>s\+i\.product\.price\*i\.qty,0\)/);
