@@ -7,7 +7,7 @@ const optionalText = (value, max = 1000) => value === '' || value == null || (ty
 export function emptyCatalog() {
   return {
     restaurant: {
-      name: 'Sabor Brasileiro',
+      name: 'MOVO',
       whatsapp: '',
       hours: '',
     },
@@ -22,7 +22,7 @@ export function normalizeCatalog(input) {
   }
 
   if (!text(input.restaurant.name, 80) || !optionalText(input.restaurant.hours, 500)) {
-    throw new Error('Confira o nome da lanchonete e os horários.');
+    throw new Error('Confira o nome da loja e os horários.');
   }
   const whatsapp = typeof input.restaurant.whatsapp === 'string' ? input.restaurant.whatsapp.replace(/\D/g, '') : '';
   if (whatsapp && (whatsapp.length < 8 || whatsapp.length > 15)) throw new Error('Informe o WhatsApp com DDI e DDD.');

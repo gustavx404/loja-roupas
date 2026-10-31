@@ -1,43 +1,31 @@
-# Cardápio Online · Sabor Brasileiro
+# MOVO — loja online
 
-Aplicação web para publicar o cardápio da lanchonete, receber pedidos em uma mensagem pronta do WhatsApp e editar produtos em um painel privado.
+Vitrine de roupas casuais e de treino, com sacola, pedido pelo WhatsApp e área administrativa. O backend usa Supabase Postgres e Storage; funções Netlify mantêm as credenciais administrativas fora do navegador.
+
+## Configurar Supabase
+
+1. Crie um projeto Supabase e copie a Project URL e uma Secret API key (`sb_secret_...`). Não use nem publique a chave no frontend.
+2. No Supabase, abra **SQL Editor**, cole e execute o conteúdo de `supabase/migrations/20261031014638_initial_movo_schema.sql`. Isso cria catálogo, administrador e sessões; ativa RLS; remove permissões de `anon` e `authenticated`; e cria um bucket privado de imagens limitado a 2 MB e JPG/PNG/WebP.
+3. No Netlify, abra **Project configuration → Environment variables** e adicione `SUPABASE_URL` e `SUPABASE_SECRET_KEY`. Marque a chave como secreta e habilite o escopo **Functions** para produção.
+4. Faça um novo deploy do site para as variáveis entrarem nas funções.
+5. Para criar o primeiro acesso no banco de produção, configure as mesmas duas variáveis na sua sessão local do PowerShell e execute `npm.cmd run admin:create`. O usuário e a senha são escolhidos no terminal; não há credencial padrão.
+6. Para redefinir uma conta existente, com as variáveis apontando para o projeto Supabase de produção, execute `npm.cmd run admin:reset`. Ele gera uma senha temporária, força a troca no próximo login e grava uma cópia em `data/admin-initial-credentials.json` (pasta ignorada pelo Git). Apague o arquivo após guardar a senha com segurança.
+
+As variáveis locais podem ser carregadas temporariamente de um `.env` local; não o envie ao Git. `.env.example` contém apenas nomes e valores fictícios.
 
 ## Executar localmente
 
-Requer Node.js 24 ou mais recente.
+```powershell
+npm.cmd ci
+npm.cmd start
+```
 
-1. Instale as dependências do projeto:
+Abra `http://localhost:3000`. O login do painel fica em `/admin`.
 
-   ```sh
-   npm install
-   ```
+## Uploads de imagem
 
-2. Inicie a aplicação local Netlify, que também sobe o banco Postgres de desenvolvimento:
+O painel aceita apenas JPG, PNG e WebP até 2 MB. A validação ocorre no navegador, na função server-side (incluindo assinatura binária real do arquivo) e no limite do bucket Storage. O bucket permanece privado; a função `/media/*` entrega as imagens e a chave secreta nunca chega ao cliente.
 
-   ```sh
-   npm run dev
-   ```
+## Habilidades do agente
 
-3. Em outro terminal, crie a única conta administrativa enquanto `netlify dev` estiver rodando:
-
-   ```sh
-   npm run admin:create
-   ```
-
-   A senha é digitada sem aparecer na tela. O cadastro não existe no site. Para provisionar sem terminal interativo, o comando aceita `ADMIN_CREDENTIALS_FILE=/caminho/seguro/credenciais.json npm run admin:create`, com JSON no formato `{"username":"admin","password":"uma-senha-longa"}`. Proteja esse arquivo e remova-o depois de criar a conta.
-
-   Depois abra `http://127.0.0.1:3000` para ver o cardápio ou `http://127.0.0.1:3000/admin` para entrar no painel. A senha inicial exige troca no primeiro acesso.
-
-O cardápio começa vazio. No painel, cadastre categorias e produtos, configure o número do WhatsApp com DDI e DDD e informe os horários.
-
-O cardápio pode ser instalado como PWA pelo navegador. Em iPhone/iPad, abra no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”. Depois da primeira visita online, a tela do cardápio e os últimos dados carregados ficam disponíveis sem conexão; enviar pedidos pelo WhatsApp e usar o painel exige internet.
-
-## Dados e publicação
-
-O banco de desenvolvimento é Postgres iniciado pelo Netlify CLI. No deploy, o mesmo código usa Netlify Database. As fotos usam Netlify Blobs.
-
-Para redefinir a senha administrativa local, com `npm run dev` ativo, execute `npm run admin:reset`. O comando invalida as sessões e mostra uma senha temporária nova, que deverá ser trocada no próximo acesso.
-
-Para publicar, conecte o projeto a um site Netlify e habilite Netlify Database. O cookie administrativo usa `Secure` em URLs HTTPS.
-
-O cliente escolhe os produtos e personalizações, informa o nome e abre o WhatsApp com o pedido preenchido. Ele revisa e envia a mensagem; pagamento, entrega e retirada são combinados diretamente com a lanchonete.
+As skills oficiais `supabase` e `supabase-postgres-best-practices` estão instaladas no ambiente Codex do usuário. O repositório versiona o projeto Supabase em `supabase/` e suas migrações.

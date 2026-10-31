@@ -1,11 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import { getStore as getBlobStore } from '@netlify/blobs';
 import { createAuth } from './auth.mjs';
 import { publicCatalog } from './catalog.mjs';
 import { getStore } from './store.mjs';
 
 const maxJsonBytes = 256 * 1024;
-const maxImageBytes = 4 * 1024 * 1024;
+const maxImageBytes = 2 * 1024 * 1024;
 const mimeByType = new Map([
   ['image/jpeg', '.jpg'],
   ['image/png', '.png'],
@@ -46,7 +45,7 @@ function getCookie(request, name) {
 
 function setSessionCookie(request, token, maxAge = 8 * 60 * 60) {
   const secure = new URL(request.url).protocol === 'https:';
-  return `cardapio_session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${secure ? '; Secure' : ''}`;
+  return `movo_session=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${secure ? '; Secure' : ''}`;
 }
 
 function sameOrigin(request) {
@@ -103,7 +102,7 @@ async function handle(request, context) {
   }
 
   if (request.method === 'GET' && path === '/api/admin/session') {
-    const current = await auth.session(getCookie(request, 'cardapio_session'));
+    const current = await auth.session(getCookie(request, 'movo_session'));
     return json(200, { administrator: current?.username ?? null, mustChangePassword: current?.mustChangePassword ?? false });
   }
 
@@ -123,7 +122,7 @@ async function handle(request, context) {
   }
 
   if (!path.startsWith('/api/admin/')) return fail(404, 'Não encontrado.');
-  const token = getCookie(request, 'cardapio_session');
+  const token = getCookie(request, 'movo_session');
   const current = await auth.session(token);
   if (!current) return fail(401, 'Entre no painel para continuar.');
   if (request.method !== 'GET' && !sameOrigin(request)) return fail(403, 'Origem da requisição não autorizada.');
@@ -152,14 +151,13 @@ async function handle(request, context) {
     const contentType = (request.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase();
     const extension = mimeByType.get(contentType);
     if (!extension) return fail(415, 'Envie uma imagem JPG, PNG ou WebP.');
-    if (Number(request.headers.get('content-length') ?? 0) > maxImageBytes) return fail(413, 'A imagem deve ter até 4 MB.');
+    if (Number(request.headers.get('content-length') ?? 0) > maxImageBytes) return fail(413, 'A imagem deve ter no máximo 2 MB.');
     const data = new Uint8Array(await request.arrayBuffer());
-    if (data.length > maxImageBytes) return fail(413, 'A imagem deve ter até 4 MB.');
+    if (data.length > maxImageBytes) return fail(413, 'A imagem deve ter no máximo 2 MB.');
     if (!validImage(data, contentType)) return fail(400, 'O arquivo não parece ser uma imagem válida.');
     const name = `${randomUUID()}${extension}`;
-    const media = getBlobStore({ name: 'sabor-brasileiro-media', consistency: 'strong' });
-    await media.set(name, data, { metadata: { contentType } });
-    return json(201, { imageUrl: `/media/${name}` });
+    const imageUrl = await store.uploadMedia(name, data, contentType);
+    return json(201, { imageUrl });
   }
   return fail(404, 'Não encontrado.');
 }

@@ -156,7 +156,7 @@ function updateImagePreview(url) {
 async function uploadImage(file) {
   if (!file) return;
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new Error('Escolha uma imagem JPG, PNG ou WebP.');
-  if (file.size > 4 * 1024 * 1024) throw new Error('A imagem deve ter até 4 MB.');
+  if (file.size > 2 * 1024 * 1024) throw new Error('A imagem deve ter no máximo 2 MB.');
   const body = await api('/api/admin/media', { method: 'POST', headers: { 'Content-Type': file.type }, body: file });
   $('#product-image-url').value = body.imageUrl;
   updateImagePreview(body.imageUrl);

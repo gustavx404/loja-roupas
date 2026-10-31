@@ -2,6 +2,10 @@
 .referencias/
 data/
 node_modules/
+.env
+.env.*
+!.env.example
+supabase/.temp/
 
 # Local Netlify folder
 .netlify
