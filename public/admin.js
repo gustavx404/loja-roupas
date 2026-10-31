@@ -25,9 +25,9 @@ function setSignedIn(account) {
   const mustChangePassword = Boolean(state.administrator?.mustChangePassword);
   $('#login-card').hidden = isSignedIn;
   $('#dashboard').hidden = !isSignedIn;
-  $('#dashboard-eyebrow').textContent = mustChangePassword ? 'PRIMEIRO ACESSO' : 'GESTÃO DO CARDÁPIO';
-  $('#dashboard-title').textContent = mustChangePassword ? 'Proteja sua conta.' : 'Um sabor de cada vez.';
-  $('#dashboard-description').textContent = mustChangePassword ? 'Troque a senha inicial para liberar o painel.' : 'Atualize o menu que seus clientes veem no link.';
+  $('#dashboard-eyebrow').textContent = mustChangePassword ? 'PRIMEIRO ACESSO' : 'GESTÃO DA LOJA';
+  $('#dashboard-title').textContent = mustChangePassword ? 'Proteja sua conta.' : 'Sua loja, do seu jeito.';
+  $('#dashboard-description').textContent = mustChangePassword ? 'Troque a senha inicial para liberar o painel.' : 'Gerencie as peças e mantenha sua vitrine sempre atualizada.';
   $('#dashboard-content').hidden = mustChangePassword;
   $('#show-password-button').hidden = mustChangePassword;
   $('#password-title').textContent = mustChangePassword ? 'Crie sua senha pessoal' : 'Alterar senha';
@@ -66,14 +66,14 @@ function renderCategories() {
 
 function renderProducts() {
   $('#product-count').textContent = String(state.catalog.products.length);
-  $('#admin-product-list').innerHTML = state.catalog.products.map((product) => {
+  $('#admin-product-list').innerHTML = state.catalog.products.length ? state.catalog.products.map((product) => {
     const category = state.catalog.categories.find((item) => item.id === product.categoryId);
     return `<article class="admin-product-row">
       <div class="admin-product-main">${product.imageUrl ? `<img class="admin-thumb" src="${escapeHtml(product.imageUrl)}" alt="" loading="lazy">` : '<span class="admin-thumb" aria-hidden="true"></span>'}
         <div class="admin-product-title"><span class="admin-product-name">${escapeHtml(product.name)}</span><small>${escapeHtml(category?.name ?? 'Sem categoria')} · ${product.priceOnRequest ? 'Sob consulta' : money.format(product.priceCents / 100)}${product.available ? '' : ' · Indisponível'}</small></div>
       </div><div class="admin-row-actions"><button type="button" data-toggle-product="${escapeHtml(product.id)}" class="${product.available ? '' : 'unavailable-action'}">${product.available ? 'Marcar indisponível' : 'Marcar disponível'}</button><button type="button" data-edit-product="${escapeHtml(product.id)}">Editar</button><button type="button" data-delete-product="${escapeHtml(product.id)}">Excluir</button></div>
     </article>`;
-  }).join('');
+  }).join('') : '<div class="catalog-empty"><span>✳</span><strong>Sua vitrine começa aqui</strong><p>Cadastre sua primeira peça para organizar o catálogo.</p></div>';
 }
 
 function showEditor(product = null) {
@@ -81,7 +81,7 @@ function showEditor(product = null) {
   form.reset();
   $('#product-error').textContent = '';
   $('#product-id').value = product?.id ?? '';
-  $('#editor-title').textContent = product ? 'Editar produto' : 'Novo produto';
+  $('#editor-title').textContent = product ? 'Editar peça' : 'Nova peça';
   $('#product-name').value = product?.name ?? '';
   $('#product-description').value = product?.description ?? '';
   $('#product-price-on-request').checked = product?.priceOnRequest ?? false;
@@ -111,7 +111,7 @@ function addModifierGroup(group = null) {
   const node = document.createElement('section');
   node.className = 'modifier-group-editor';
   node.dataset.groupId = id;
-  node.innerHTML = `<div class="modifier-group-header"><input data-group-name aria-label="Nome do grupo de opções" placeholder="Ex.: Escolha o tamanho" maxlength="80" value="${escapeHtml(group?.name ?? '')}" required><button class="remove-group-button" data-remove-group type="button" aria-label="Remover grupo">×</button></div>
+  node.innerHTML = `<div class="modifier-group-header"><input data-group-name aria-label="Nome do grupo de opções" placeholder="Ex.: Tamanho" maxlength="80" value="${escapeHtml(group?.name ?? '')}" required><button class="remove-group-button" data-remove-group type="button" aria-label="Remover grupo">×</button></div>
     <div class="group-flags"><label><input data-group-required type="checkbox" ${group?.required ? 'checked' : ''}> Escolha obrigatória</label><label><input data-group-multiple type="checkbox" ${group && group.max > 1 ? 'checked' : ''}> Permitir várias opções</label></div>
     <div data-options></div><button class="text-button add-option-button" data-add-option type="button">+ Adicionar opção</button>`;
   $('#modifier-groups').append(node);
@@ -121,7 +121,7 @@ function addModifierGroup(group = null) {
 function addModifierOption(groupNode, option = null) {
   const node = document.createElement('div');
   node.className = 'modifier-option-row';
-  node.innerHTML = `<input data-option-name aria-label="Nome da opção" placeholder="Ex.: Cheddar extra" maxlength="80" value="${escapeHtml(option?.name ?? '')}"><input data-option-price inputmode="decimal" aria-label="Preço adicional" placeholder="0,00" value="${option ? (option.priceCents / 100).toFixed(2).replace('.', ',') : ''}"><button data-remove-option type="button" aria-label="Remover opção">×</button>`;
+  node.innerHTML = `<input data-option-name aria-label="Nome da opção" placeholder="Ex.: P, M, G ou GG" maxlength="80" value="${escapeHtml(option?.name ?? '')}"><input data-option-price inputmode="decimal" aria-label="Acréscimo no preço" placeholder="0,00" value="${option ? (option.priceCents / 100).toFixed(2).replace('.', ',') : ''}"><button data-remove-option type="button" aria-label="Remover opção">×</button>`;
   groupNode.querySelector('[data-options]').append(node);
 }
 

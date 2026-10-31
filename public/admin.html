@@ -3,88 +3,102 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#191d1b">
+    <meta name="theme-color" content="#f5f2ec">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="MOVO">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="description" content="Painel administrativo MOVO.">
+    <meta name="description" content="Painel administrativo da MOVO.">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=movo1">
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <title>Painel · MOVO</title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/admin-movo.css">
     <script src="/admin.js" type="module"></script>
   </head>
   <body class="admin-body">
-    <div class="ambient ambient-one" aria-hidden="true"></div><div class="ambient ambient-two" aria-hidden="true"></div>
-    <main class="admin-shell wrap">
-      <header class="site-header glass-panel admin-topbar">
-        <a class="brand-lockup" href="/"><img class="brand-logo" src="/favicon.svg" alt="" width="52" height="52"><span class="brand-copy"><strong>MOVO</strong><small>PAINEL DO ADMINISTRADOR</small></span></a>
-        <a class="quiet-link" href="/">Ver loja ↗</a>
+    <main class="admin-shell">
+      <header class="admin-topbar">
+        <a class="admin-brand" href="/" aria-label="MOVO, voltar à loja"><span class="admin-brand-mark">M</span><span><strong>MOVO</strong><small>PAINEL DA LOJA</small></span></a>
+        <a class="store-link" href="/">Ver loja <span aria-hidden="true">↗</span></a>
       </header>
 
-      <section class="login-card glass-panel" id="login-card">
-        <p class="eyebrow">ÁREA RESTRITA</p><h1>Bem-vindo de volta.</h1><p class="subtle-copy">Entre para cuidar do seu cardápio.</p>
-        <form id="login-form" class="stack-form">
-          <label class="field-label" for="login-username">Usuário</label><input id="login-username" name="username" autocomplete="username" required maxlength="32">
-          <label class="field-label" for="login-password">Senha</label><input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="1024">
-          <p class="form-error" id="login-error" role="alert"></p><button class="primary-button full-width" type="submit">Entrar no painel</button>
-        </form>
+      <section class="login-card" id="login-card">
+        <div class="login-art" aria-hidden="true"><span>M</span><small>MOVIMENTO É A SUA MARCA.</small></div>
+        <div class="login-content"><p class="eyebrow">ÁREA RESTRITA</p><h1>Bom ter você<br>de volta.</h1><p class="subtle-copy">Entre para cuidar da sua loja.</p>
+          <form id="login-form" class="stack-form">
+            <label class="field-label" for="login-username">Usuário</label><input id="login-username" name="username" autocomplete="username" required maxlength="32" placeholder="Seu usuário">
+            <label class="field-label" for="login-password">Senha</label><input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="1024" placeholder="Sua senha">
+            <p class="form-error" id="login-error" role="alert"></p><button class="primary-button full-width" type="submit">Entrar no painel <span aria-hidden="true">→</span></button>
+          </form>
+          <p class="login-footnote">Acesso seguro · MOVO</p>
+        </div>
       </section>
 
       <section class="dashboard" id="dashboard" hidden>
-        <div class="dashboard-intro" id="dashboard-intro"><div><p class="eyebrow" id="dashboard-eyebrow">GESTÃO DO CARDÁPIO</p><h1 id="dashboard-title">Um sabor de cada vez.</h1><p class="subtle-copy" id="dashboard-description">Atualize o menu que seus clientes veem no link.</p></div><div class="dashboard-actions"><button class="secondary-button" id="show-password-button" type="button">Alterar senha</button><button class="secondary-button" id="logout-button" type="button">Sair do painel</button></div></div>
-        <div class="dashboard-grid" id="dashboard-content">
-          <section class="glass-panel admin-card settings-card">
-            <div class="admin-card-heading"><div><p class="eyebrow">SUA LANCHONETE</p><h2>Informações</h2></div></div>
-            <form id="settings-form" class="stack-form compact-form">
-              <label class="field-label" for="restaurant-name">Nome</label><input id="restaurant-name" maxlength="80" required>
-              <label class="field-label" for="restaurant-whatsapp">WhatsApp com DDI e DDD</label><input id="restaurant-whatsapp" inputmode="tel" placeholder="5511999999999" maxlength="18"><span class="input-hint">Exemplo: 55 + DDD + número, somente dígitos.</span>
-              <label class="field-label" for="restaurant-hours">Horários</label><textarea id="restaurant-hours" rows="3" maxlength="500" placeholder="Seg a sáb · 18h às 23h"></textarea>
-              <button class="secondary-button" type="submit">Salvar informações</button>
-            </form>
-          </section>
+        <aside class="admin-sidebar" aria-label="Navegação do painel">
+          <div class="sidebar-store"><span class="sidebar-avatar">M</span><span><strong>MOVO</strong><small>Loja de roupas</small></span><span class="online-dot" title="Conectado"></span></div>
+          <p class="sidebar-label">MENU DA LOJA</p>
+          <a class="sidebar-link active" href="#admin-product-list"><span>▦</span>Produtos</a>
+          <a class="sidebar-link" href="#category-admin-list"><span>◫</span>Categorias</a>
+          <a class="sidebar-link" href="#settings-form"><span>⚙</span>Configurações</a>
+          <div class="sidebar-bottom"><span class="secure-badge">● &nbsp;Painel protegido</span><a class="sidebar-link" href="/">↗ &nbsp; Ver loja</a></div>
+        </aside>
 
-          <section class="glass-panel admin-card categories-card">
-            <div class="admin-card-heading"><div><p class="eyebrow">ORGANIZAÇÃO</p><h2>Categorias</h2></div></div>
-            <form id="category-form" class="inline-form"><input id="category-name" aria-label="Nova categoria" placeholder="Ex.: Hambúrgueres" maxlength="60" required><button class="icon-add" type="submit" aria-label="Adicionar categoria">+</button></form>
-            <ul class="category-admin-list" id="category-admin-list"></ul>
-          </section>
+        <div class="dashboard-main">
+          <div class="dashboard-bar"><span>Loja <span aria-hidden="true">/</span> Administração</span><div class="dashboard-actions"><button class="secondary-button" id="show-password-button" type="button">Alterar senha</button><button class="secondary-button logout-button" id="logout-button" type="button">Sair</button></div></div>
+          <div class="dashboard-intro" id="dashboard-intro"><div><p class="eyebrow" id="dashboard-eyebrow">GESTÃO DA LOJA</p><h1 id="dashboard-title">Sua loja, do seu jeito.</h1><p class="subtle-copy" id="dashboard-description">Gerencie as peças e mantenha sua vitrine sempre atualizada.</p></div><span class="intro-mark" aria-hidden="true">M.</span></div>
+          <div class="dashboard-grid" id="dashboard-content">
+            <section class="admin-card settings-card" id="store-settings">
+              <div class="admin-card-heading"><div><p class="eyebrow">SUA MARCA</p><h2>Dados da loja</h2></div><span class="section-icon">↗</span></div>
+              <form id="settings-form" class="stack-form compact-form">
+                <label class="field-label" for="restaurant-name">Nome da loja</label><input id="restaurant-name" maxlength="80" required>
+                <label class="field-label" for="restaurant-whatsapp">WhatsApp para pedidos</label><input id="restaurant-whatsapp" inputmode="tel" placeholder="5511999999999" maxlength="18"><span class="input-hint">DDI + DDD + número, somente dígitos.</span>
+                <label class="field-label" for="restaurant-hours">Informações de entrega</label><textarea id="restaurant-hours" rows="3" maxlength="500" placeholder="Ex.: Enviamos para todo o Brasil"></textarea>
+                <button class="secondary-button" type="submit">Salvar informações</button>
+              </form>
+            </section>
 
-          <section class="glass-panel admin-card products-card">
-            <div class="admin-card-heading product-list-heading"><div><p class="eyebrow">SEU MENU</p><h2>Produtos <span class="count-pill" id="product-count">0</span></h2></div><button class="primary-button compact-button" id="new-product-button" type="button">+ Novo produto</button></div>
-            <div class="admin-product-list" id="admin-product-list"></div>
-          </section>
+            <section class="admin-card categories-card">
+              <div class="admin-card-heading"><div><p class="eyebrow">VITRINE</p><h2>Categorias</h2></div><span class="section-icon">◫</span></div>
+              <p class="section-description">Organize as peças para facilitar a navegação.</p>
+              <form id="category-form" class="inline-form"><input id="category-name" aria-label="Nova categoria" placeholder="Ex.: Treino, Casual" maxlength="60" required><button class="icon-add" type="submit" aria-label="Adicionar categoria">+</button></form>
+              <ul class="category-admin-list" id="category-admin-list"></ul>
+            </section>
 
-          <section class="glass-panel admin-card product-editor" id="product-editor" hidden>
-            <div class="admin-card-heading"><div><p class="eyebrow">DETALHES DO MENU</p><h2 id="editor-title">Novo produto</h2></div><button class="icon-button" id="close-editor" type="button" aria-label="Fechar editor">×</button></div>
-            <form id="product-form" class="stack-form compact-form">
-              <input id="product-id" type="hidden">
-              <label class="field-label" for="product-name">Nome do produto</label><input id="product-name" maxlength="100" required>
-              <label class="field-label" for="product-description">Descrição</label><textarea id="product-description" rows="2" maxlength="500" placeholder="Conte o que deixa esse sabor especial"></textarea>
-              <label class="field-label" for="product-price">Preço (R$)</label><input id="product-price" inputmode="decimal" placeholder="24,90" required>
-              <div class="toggle-row"><label for="product-price-on-request">Preço sob consulta</label><input id="product-price-on-request" type="checkbox"></div>
-              <label class="field-label" for="product-category">Categoria</label><select id="product-category"><option value="">Sem categoria</option></select>
-              <div class="upload-row"><label class="field-label" for="product-image">Foto do produto</label><input id="product-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="input-hint">JPG, PNG ou WebP · máximo 2 MB.</span><input id="product-image-url" type="hidden"><img class="image-preview" id="image-preview" alt="Prévia da foto" hidden></div>
-              <div class="toggle-row"><label for="product-available">Disponível para pedidos</label><input id="product-available" type="checkbox" checked></div>
-              <div class="editor-subsection"><div class="subsection-heading"><h3>Escolhas e adicionais</h3><button class="text-button" id="add-group-button" type="button">+ Adicionar grupo</button></div><p class="input-hint">Ex.: escolha o tamanho, adicione queijo. Cada grupo pode ser obrigatório e as opções podem alterar o preço.</p><div id="modifier-groups"></div></div>
-              <div class="editor-subsection"><label class="field-label" for="product-removals">Ingredientes que podem ser removidos</label><textarea id="product-removals" rows="2" placeholder="Cebola&#10;Picles"></textarea><span class="input-hint">Uma opção por linha.</span></div>
-              <p class="form-error" id="product-error" role="alert"></p>
-              <div class="editor-actions"><button class="secondary-button" id="cancel-product" type="button">Cancelar</button><button class="primary-button" type="submit">Salvar produto</button></div>
-            </form>
-          </section>
+            <section class="admin-card products-card">
+              <div class="admin-card-heading product-list-heading"><div><p class="eyebrow">CATÁLOGO</p><h2>Seus produtos <span class="count-pill" id="product-count">0</span></h2></div><button class="primary-button compact-button" id="new-product-button" type="button"><span>+</span> Nova peça</button></div>
+              <p class="section-description">Adicione fotos, preços e tamanhos das suas peças.</p>
+              <div class="admin-product-list" id="admin-product-list"></div>
+            </section>
+
+            <section class="admin-card product-editor" id="product-editor" hidden>
+              <div class="admin-card-heading"><div><p class="eyebrow">CATÁLOGO</p><h2 id="editor-title">Nova peça</h2></div><button class="icon-button" id="close-editor" type="button" aria-label="Fechar editor">×</button></div>
+              <form id="product-form" class="stack-form compact-form">
+                <input id="product-id" type="hidden">
+                <label class="field-label" for="product-name">Nome da peça</label><input id="product-name" maxlength="100" required placeholder="Ex.: Camiseta Move Oversized">
+                <label class="field-label" for="product-description">Descrição</label><textarea id="product-description" rows="3" maxlength="500" placeholder="Material, caimento e detalhes da peça"></textarea>
+                <label class="field-label" for="product-price">Preço (R$)</label><input id="product-price" inputmode="decimal" placeholder="89,90" required>
+                <div class="toggle-row"><label for="product-price-on-request">Preço sob consulta</label><input id="product-price-on-request" type="checkbox"></div>
+                <label class="field-label" for="product-category">Categoria</label><select id="product-category"><option value="">Sem categoria</option></select>
+                <div class="upload-row"><label class="field-label" for="product-image">Foto da peça</label><input id="product-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="input-hint">JPG, PNG ou WebP · máximo 2 MB.</span><input id="product-image-url" type="hidden"><img class="image-preview" id="image-preview" alt="Prévia da foto" hidden></div>
+                <div class="toggle-row"><label for="product-available">Disponível na loja</label><input id="product-available" type="checkbox" checked></div>
+                <div class="editor-subsection"><div class="subsection-heading"><h3>Tamanhos e opções</h3><button class="text-button" id="add-group-button" type="button">+ Adicionar grupo</button></div><p class="input-hint">Crie um grupo como “Tamanho” e adicione opções como P, M, G e GG.</p><div id="modifier-groups"></div></div>
+                <textarea id="product-removals" hidden aria-hidden="true" tabindex="-1"></textarea>
+                <p class="form-error" id="product-error" role="alert"></p>
+                <div class="editor-actions"><button class="secondary-button" id="cancel-product" type="button">Cancelar</button><button class="primary-button" type="submit">Salvar peça</button></div>
+              </form>
+            </section>
+          </div>
         </div>
       </section>
-      <dialog class="name-dialog password-dialog" id="password-dialog">
-        <form id="password-form" class="stack-form">
-          <p class="eyebrow">CONTA ADMINISTRATIVA</p><h2 id="password-title">Alterar senha</h2><p class="subtle-copy" id="password-description">Use uma senha exclusiva com pelo menos 14 caracteres.</p>
-          <label class="field-label" for="current-password">Senha atual</label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required maxlength="1024">
-          <label class="field-label" for="new-password">Nova senha</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
-          <label class="field-label" for="confirm-password">Confirme a nova senha</label><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
-          <p class="form-error" id="password-error" role="alert"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-password" type="button">Cancelar</button><button class="secondary-button" id="logout-first-access" type="button" hidden>Sair</button><button class="primary-button" type="submit">Salvar nova senha</button></div>
-        </form>
-      </dialog>
-      <footer class="site-footer admin-footer"><a href="/">Voltar à loja</a><span>Área administrativa protegida</span></footer>
+      <dialog class="name-dialog password-dialog" id="password-dialog"><form id="password-form" class="stack-form">
+        <p class="eyebrow">CONTA ADMINISTRATIVA</p><h2 id="password-title">Alterar senha</h2><p class="subtle-copy" id="password-description">Use uma senha exclusiva com pelo menos 14 caracteres.</p>
+        <label class="field-label" for="current-password">Senha atual</label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required maxlength="1024">
+        <label class="field-label" for="new-password">Nova senha</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+        <label class="field-label" for="confirm-password">Confirme a nova senha</label><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+        <p class="form-error" id="password-error" role="alert"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-password" type="button">Cancelar</button><button class="secondary-button" id="logout-first-access" type="button" hidden>Sair</button><button class="primary-button" type="submit">Salvar nova senha</button></div>
+      </form></dialog>
+      <footer class="admin-footer"><a href="/">← Voltar à loja</a><span>MOVO · Área administrativa protegida</span></footer>
     </main>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="/pwa.js" type="module"></script>
