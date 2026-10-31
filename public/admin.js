@@ -2,7 +2,7 @@ const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const state = { catalog: null, administrator: null };
+const state = { catalog: null, administrator: null, activeTab: 'products' };
 
 async function api(path, options = {}) {
   const response = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...options });
@@ -19,6 +19,29 @@ function toast(message) {
   toast.timer = setTimeout(() => node.classList.remove('is-visible'), 2600);
 }
 
+const adminTabCopy = {
+  products: ['PRODUTOS', 'Peças da sua loja.', 'Cadastre, atualize e organize o que está à venda.'],
+  categories: ['CATEGORIAS', 'Organize sua vitrine.', 'Agrupe as peças para facilitar a escolha dos clientes.'],
+  appearance: ['APARÊNCIA', 'Deixe a loja com a sua cara.', 'Edite a apresentação e as imagens da página inicial.'],
+  settings: ['CONFIGURAÇÕES', 'Dados da sua loja.', 'Atualize seu nome, WhatsApp e informações de entrega.'],
+};
+
+function setActiveTab(tab) {
+  if (!adminTabCopy[tab]) return;
+  state.activeTab = tab;
+  $$('[data-admin-tab]').forEach((button) => {
+    const active = button.dataset.adminTab === tab;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  $$('[data-admin-panel]').forEach((panel) => { panel.hidden = panel.dataset.adminPanel !== tab; });
+  if (tab !== 'products') $('#product-editor').hidden = true;
+  const [eyebrow, title, description] = adminTabCopy[tab];
+  $('#dashboard-eyebrow').textContent = eyebrow;
+  $('#dashboard-title').textContent = title;
+  $('#dashboard-description').textContent = description;
+}
+
 function setSignedIn(account) {
   state.administrator = account?.administrator ? account : null;
   const isSignedIn = Boolean(state.administrator);
@@ -31,13 +54,16 @@ function setSignedIn(account) {
   $('#dashboard-content').hidden = mustChangePassword;
   $('#show-password-button').hidden = mustChangePassword;
   $('#password-title').textContent = mustChangePassword ? 'Crie sua senha pessoal' : 'Alterar senha';
-  $('#password-description').textContent = mustChangePassword ? 'A senha inicial só serve para este primeiro acesso. Defina uma senha exclusiva com pelo menos 14 caracteres. Depois, apague data/admin-initial-credentials.json.' : 'Use uma senha exclusiva com pelo menos 14 caracteres.';
+  $('#password-description').textContent = mustChangePassword ? 'Defina uma senha pessoal com pelo menos 14 caracteres para liberar as ferramentas da loja.' : 'Use uma senha exclusiva com pelo menos 14 caracteres.';
   $('#cancel-password').hidden = mustChangePassword;
   $('#logout-first-access').hidden = !mustChangePassword;
   $('#refresh-password-status').hidden = !mustChangePassword;
   if (mustChangePassword && !$('#password-dialog').open) $('#password-dialog').showModal();
   if (!isSignedIn && $('#password-dialog').open) $('#password-dialog').close();
-  if (isSignedIn && !mustChangePassword) loadCatalog().catch((error) => toast(error.message));
+  if (isSignedIn && !mustChangePassword) {
+    setActiveTab(state.activeTab);
+    loadCatalog().catch((error) => toast(error.message));
+  }
 }
 
 async function loadCatalog() {
@@ -188,6 +214,8 @@ $('#login-form').addEventListener('submit', async (event) => {
     error.textContent = reason.status === 503 ? 'Crie a conta no terminal enquanto npm run dev estiver rodando.' : reason.message;
   }
 });
+
+$$('[data-admin-tab]').forEach((button) => button.addEventListener('click', () => setActiveTab(button.dataset.adminTab)));
 
 $('#logout-button').addEventListener('click', async () => {
   try {
@@ -400,7 +428,7 @@ $('#product-form').addEventListener('submit', async (event) => {
   if (current) state.catalog.products = state.catalog.products.map((item) => item.id === current.id ? product : item);
   else state.catalog.products.push(product);
   try {
-    await saveCatalog('Produto salvo no cardápio.');
+    await saveCatalog('Peça salva na loja.');
     closeEditor();
   } catch (error) {
     errorNode.textContent = error.message;

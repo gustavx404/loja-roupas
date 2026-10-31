@@ -2,12 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const [script, page, styles, adminPage, adminScript] = await Promise.all([
+const [script, page, styles, adminPage, adminScript, adminStyles] = await Promise.all([
   readFile(new URL('../public/store.js', import.meta.url), 'utf8'),
   readFile(new URL('../public/index.html', import.meta.url), 'utf8'),
   readFile(new URL('../public/mobile-first.css', import.meta.url), 'utf8'),
   readFile(new URL('../public/admin.html', import.meta.url), 'utf8'),
   readFile(new URL('../public/admin.js', import.meta.url), 'utf8'),
+  readFile(new URL('../public/admin-movo.css', import.meta.url), 'utf8'),
 ]);
 
 test('catalog includes casual and training products', () => {
@@ -40,11 +41,14 @@ test('mobile styles provide touch sized controls and a two column product grid',
 });
 
 test('admin can edit store identity and homepage appearance', () => {
-  assert.match(adminPage, /href="#appearance-settings"/);
+  assert.match(adminPage, /data-admin-tab="appearance"/);
   assert.match(adminPage, /id="appearance-settings"/);
   assert.match(adminPage, /id="hero-image"/);
   assert.match(adminPage, /id="favicon-image"/);
   assert.match(adminScript, /appearance-form/);
+  assert.match(adminScript, /function setActiveTab/);
   assert.match(script, /loadStoreAppearance/);
   assert.match(script, /restaurant\.faviconUrl/);
+  assert.match(adminStyles, /::file-selector-button/);
+  assert.match(adminStyles, /system-ui/);
 });

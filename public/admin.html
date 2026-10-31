@@ -12,8 +12,8 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <title>Painel · MOVO</title>
     <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/admin-movo.css?v=20261030-3">
-    <script src="/admin.js?v=20261030-3" type="module"></script>
+    <link rel="stylesheet" href="/admin-movo.css?v=20261030-4">
+    <script src="/admin.js?v=20261030-4" type="module"></script>
   </head>
   <body class="admin-body">
     <main class="admin-shell">
@@ -38,10 +38,10 @@
         <aside class="admin-sidebar" aria-label="Navegação do painel">
           <div class="sidebar-store"><span class="sidebar-avatar">M</span><span><strong>MOVO</strong><small>Loja de roupas</small></span><span class="online-dot" title="Conectado"></span></div>
           <p class="sidebar-label">MENU DA LOJA</p>
-          <a class="sidebar-link active" href="#admin-product-list"><span>▦</span>Produtos</a>
-          <a class="sidebar-link" href="#category-admin-list"><span>◫</span>Categorias</a>
-          <a class="sidebar-link" href="#appearance-settings"><span>✦</span>Aparência</a>
-          <a class="sidebar-link" href="#store-settings"><span>⚙</span>Configurações</a>
+          <button class="sidebar-link active" type="button" data-admin-tab="products" aria-pressed="true"><span>▦</span>Produtos</button>
+          <button class="sidebar-link" type="button" data-admin-tab="categories" aria-pressed="false"><span>◫</span>Categorias</button>
+          <button class="sidebar-link" type="button" data-admin-tab="appearance" aria-pressed="false"><span>✦</span>Aparência</button>
+          <button class="sidebar-link" type="button" data-admin-tab="settings" aria-pressed="false"><span>⚙</span>Configurações</button>
           <div class="sidebar-bottom"><span class="secure-badge">● &nbsp;Painel protegido</span><a class="sidebar-link" href="/">↗ &nbsp; Ver loja</a></div>
         </aside>
 
@@ -49,7 +49,7 @@
           <div class="dashboard-bar"><span>Loja <span aria-hidden="true">/</span> Administração</span><div class="dashboard-actions"><button class="secondary-button" id="show-password-button" type="button">Alterar senha</button><button class="secondary-button logout-button" id="logout-button" type="button">Sair</button></div></div>
           <div class="dashboard-intro" id="dashboard-intro"><div><p class="eyebrow" id="dashboard-eyebrow">GESTÃO DA LOJA</p><h1 id="dashboard-title">Sua loja, do seu jeito.</h1><p class="subtle-copy" id="dashboard-description">Gerencie as peças e mantenha sua vitrine sempre atualizada.</p></div><span class="intro-mark" aria-hidden="true">M.</span></div>
           <div class="dashboard-grid" id="dashboard-content">
-            <section class="admin-card settings-card" id="store-settings">
+            <section class="admin-card settings-card" id="store-settings" data-admin-panel="settings" hidden>
               <div class="admin-card-heading"><div><p class="eyebrow">SUA MARCA</p><h2>Dados da loja</h2></div><span class="section-icon">↗</span></div>
               <form id="settings-form" class="stack-form compact-form">
                 <label class="field-label" for="restaurant-name">Nome da loja</label><input id="restaurant-name" maxlength="80" required>
@@ -59,7 +59,7 @@
               </form>
             </section>
 
-            <section class="admin-card appearance-card" id="appearance-settings">
+            <section class="admin-card appearance-card" id="appearance-settings" data-admin-panel="appearance" hidden>
               <div class="admin-card-heading"><div><p class="eyebrow">IDENTIDADE VISUAL</p><h2>Aparência do site</h2></div><span class="section-icon">✦</span></div>
               <p class="section-description">Edite a apresentação da página inicial e suas imagens.</p>
               <form id="appearance-form" class="stack-form compact-form">
@@ -74,14 +74,14 @@
               </form>
             </section>
 
-            <section class="admin-card categories-card">
+            <section class="admin-card categories-card" data-admin-panel="categories" hidden>
               <div class="admin-card-heading"><div><p class="eyebrow">VITRINE</p><h2>Categorias</h2></div><span class="section-icon">◫</span></div>
               <p class="section-description">Organize as peças para facilitar a navegação.</p>
               <form id="category-form" class="inline-form"><input id="category-name" aria-label="Nova categoria" placeholder="Ex.: Treino, Casual" maxlength="60" required><button class="icon-add" type="submit" aria-label="Adicionar categoria">+</button></form>
               <ul class="category-admin-list" id="category-admin-list"></ul>
             </section>
 
-            <section class="admin-card products-card">
+            <section class="admin-card products-card" data-admin-panel="products">
               <div class="admin-card-heading product-list-heading"><div><p class="eyebrow">CATÁLOGO</p><h2>Seus produtos <span class="count-pill" id="product-count">0</span></h2></div><button class="primary-button compact-button" id="new-product-button" type="button"><span>+</span> Nova peça</button></div>
               <p class="section-description">Adicione fotos, preços e tamanhos das suas peças.</p>
               <div class="admin-product-list" id="admin-product-list"></div>
