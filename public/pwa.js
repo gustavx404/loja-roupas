@@ -2,9 +2,10 @@ let installPrompt;
 const installButton = document.querySelector('#install-app');
 
 window.addEventListener('beforeinstallprompt', (event) => {
+  if (!installButton) return;
   event.preventDefault();
   installPrompt = event;
-  if (installButton) installButton.hidden = false;
+  installButton.hidden = false;
 });
 
 installButton?.addEventListener('click', async () => {
@@ -20,25 +21,8 @@ window.addEventListener('appinstalled', () => {
   if (installButton) installButton.hidden = true;
 });
 
-const isIosDevice = /iphone|ipad|ipod/i.test(navigator.userAgent)
-  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const isStandalone = navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-const isIos = isIosDevice && !isStandalone;
-if (isIos && installButton) {
-  installButton.hidden = false;
-  installButton.textContent = 'Adicionar à tela';
-  installButton.addEventListener('click', () => {
-    window.alert('No Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.');
-  });
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    const registrations = await navigator.serviceWorker.getRegistrations().catch(() => []);
-    await Promise.all(registrations.map((registration) => registration.unregister()));
-    if ('caches' in window) {
-      const keys = await caches.keys().catch(() => []);
-      await Promise.all(keys.map((key) => caches.delete(key)));
-    }
-  });
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+  }, { once: true });
 }

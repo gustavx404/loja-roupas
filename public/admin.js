@@ -80,15 +80,23 @@ async function loadCatalog() {
   $('#hero-image-preview').hidden = !state.catalog.restaurant.heroImageUrl;
   $('#favicon-image-preview').src = state.catalog.restaurant.faviconUrl ?? '';
   $('#favicon-image-preview').hidden = !state.catalog.restaurant.faviconUrl;
+  const faviconUrl = state.catalog.restaurant.faviconUrl || '/favicon.svg';
+  const versionedFavicon = `${faviconUrl}${faviconUrl.includes('?') ? '&' : '?'}v=${encodeURIComponent(faviconUrl)}`;
+  document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach((link) => { link.href = versionedFavicon; });
   renderCategories();
   renderProducts();
 }
 
 async function saveCatalog(message) {
-  state.catalog = await api('/api/admin/catalog', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(state.catalog) });
-  renderCategories();
-  renderProducts();
-  if (message) toast(message);
+  try {
+    state.catalog = await api('/api/admin/catalog', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(state.catalog) });
+    renderCategories();
+    renderProducts();
+    if (message) toast(message);
+  } catch (error) {
+    await loadCatalog().catch(() => {});
+    throw error;
+  }
 }
 
 function renderCategories() {
@@ -320,6 +328,7 @@ $('#category-form').addEventListener('submit', async (event) => {
   const input = $('#category-name');
   const name = input.value.trim();
   if (!name) return;
+  state.catalog.catalogManaged = true;
   state.catalog.categories.push({ id: crypto.randomUUID(), name });
   try {
     await saveCatalog('Categoria adicionada.');
@@ -335,6 +344,7 @@ $('#category-admin-list').addEventListener('click', async (event) => {
     toast('Mova os produtos para outra categoria antes de removê-la.');
     return;
   }
+  state.catalog.catalogManaged = true;
   state.catalog.categories = state.catalog.categories.filter((category) => category.id !== id);
   try { await saveCatalog('Categoria removida.'); } catch (error) { toast(error.message); }
 });
@@ -354,10 +364,13 @@ $('#admin-product-list').addEventListener('click', async (event) => {
   if (edit) showEditor(state.catalog.products.find((item) => item.id === edit.dataset.editProduct));
   if (toggle) {
     const product = state.catalog.products.find((item) => item.id === toggle.dataset.toggleProduct);
+    if (!product) return;
+    state.catalog.catalogManaged = true;
     product.available = !product.available;
     try { await saveCatalog(product.available ? 'Produto disponível.' : 'Produto marcado como indisponível.'); } catch (error) { toast(error.message); }
   }
   if (remove) {
+    state.catalog.catalogManaged = true;
     state.catalog.products = state.catalog.products.filter((item) => item.id !== remove.dataset.deleteProduct);
     try { await saveCatalog('Produto removido.'); } catch (error) { toast(error.message); }
   }
@@ -427,6 +440,7 @@ $('#product-form').addEventListener('submit', async (event) => {
   };
   if (current) state.catalog.products = state.catalog.products.map((item) => item.id === current.id ? product : item);
   else state.catalog.products.push(product);
+  state.catalog.catalogManaged = true;
   try {
     await saveCatalog('Peça salva na loja.');
     closeEditor();

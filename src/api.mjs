@@ -145,7 +145,7 @@ async function handle(request, context) {
   if (request.method === 'GET' && path === '/api/admin/catalog') return json(200, await store.getCatalog());
   if (request.method === 'PUT' && path === '/api/admin/catalog') {
     try { return json(200, await store.saveCatalog(await readJson(request))); }
-    catch (error) { return fail(400, error.message || 'Não foi possível salvar o cardápio.'); }
+    catch (error) { return fail(400, error.message || 'Não foi possível salvar o catálogo.'); }
   }
   if (request.method === 'POST' && path === '/api/admin/media') {
     const contentType = (request.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase();

@@ -18,12 +18,13 @@ export function emptyCatalog() {
     },
     categories: [],
     products: [],
+    catalogManaged: false,
   };
 }
 
 export function normalizeCatalog(input) {
   if (!input || typeof input !== 'object' || !input.restaurant || !Array.isArray(input.categories) || !Array.isArray(input.products)) {
-    throw new Error('Formato de cardápio inválido.');
+    throw new Error('Formato de catálogo inválido.');
   }
 
   if (!text(input.restaurant.name, 80) || !optionalText(input.restaurant.hours, 500)) {
@@ -50,13 +51,13 @@ export function normalizeCatalog(input) {
   }
 
   if (!Array.isArray(input.categories) || input.categories.length > 40 || input.products.length > 300) {
-    throw new Error('O cardápio excede os limites permitidos.');
+    throw new Error('O catálogo excede os limites permitidos.');
   }
 
   const categoryIds = new Set();
   const categories = input.categories.map((category) => {
     const id = typeof category.id === 'string' && category.id.length <= 50 ? category.id : randomUUID();
-    if (categoryIds.has(id) || !text(category.name, 60)) throw new Error('Confira as categorias do cardápio.');
+    if (categoryIds.has(id) || !text(category.name, 60)) throw new Error('Confira as categorias da loja.');
     categoryIds.add(id);
     return { id, name: category.name.trim() };
   });
@@ -71,7 +72,7 @@ export function normalizeCatalog(input) {
     productIds.add(id);
     if (product.categoryId && !categoryIds.has(product.categoryId)) throw new Error('Uma categoria de produto não existe.');
     if (!optionalText(product.description, 500) || !optionalText(product.imageUrl, 600)) throw new Error('Confira a descrição ou foto de um produto.');
-    if (product.imageUrl && (!/^\/(?:media|images\/menu-products)\/[\w./-]+$/.test(product.imageUrl) || /(?:^|\/)\.\.(?:\/|$)/.test(product.imageUrl))) {
+    if (product.imageUrl && (!/^\/media\/[\w.-]+$/.test(product.imageUrl) || /(?:^|\/)\.\.(?:\/|$)/.test(product.imageUrl))) {
       throw new Error('As fotos precisam ser enviadas pelo painel.');
     }
 
@@ -110,13 +111,19 @@ export function normalizeCatalog(input) {
     };
   });
 
-  return { restaurant, categories, products };
+  return {
+    restaurant,
+    categories,
+    products,
+    catalogManaged: input.catalogManaged === true || categories.length > 0 || products.length > 0,
+  };
 }
 
 export function publicCatalog(catalog) {
   return {
     restaurant: catalog.restaurant,
     categories: catalog.categories,
+    catalogManaged: catalog.catalogManaged,
     products: catalog.products.map(({ id, categoryId, name, description, priceCents, priceOnRequest, imageUrl, available, modifierGroups, removals }) => ({
       id, categoryId, name, description, priceCents, priceOnRequest, imageUrl, available, modifierGroups, removals,
     })),

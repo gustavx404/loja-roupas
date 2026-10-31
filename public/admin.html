@@ -9,11 +9,11 @@
     <meta name="description" content="Painel administrativo da MOVO.">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=movo1">
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=movo2">
     <title>Painel · MOVO</title>
     <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/admin-movo.css?v=20261030-4">
-    <script src="/admin.js?v=20261030-4" type="module"></script>
+    <link rel="stylesheet" href="/admin-movo.css?v=20261030-6">
+    <script src="/admin.js?v=20261030-6" type="module"></script>
   </head>
   <body class="admin-body">
     <main class="admin-shell">
@@ -66,9 +66,21 @@
                 <label class="field-label" for="announcement-text">Aviso no topo da loja</label><input id="announcement-text" maxlength="140" placeholder="Ex.: Frete grátis acima de R$ 299">
                 <label class="field-label" for="hero-title-text">Título principal</label><input id="hero-title-text" maxlength="100" required>
                 <label class="field-label" for="hero-description-text">Texto de apresentação</label><textarea id="hero-description-text" rows="3" maxlength="300"></textarea>
-                <div class="brand-upload-grid">
-                  <div class="upload-row"><label class="field-label" for="hero-image">Imagem de destaque</label><input id="hero-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="input-hint">JPG, PNG ou WebP · máximo 2 MB.</span><input id="hero-image-url" type="hidden"><img class="image-preview hero-image-preview" id="hero-image-preview" alt="Prévia do destaque" hidden></div>
-                  <div class="upload-row"><label class="field-label" for="favicon-image">Favicon da loja</label><input id="favicon-image" type="file" accept="image/png,image/jpeg,image/webp"><span class="input-hint">PNG recomendado · máximo 2 MB.</span><input id="favicon-image-url" type="hidden"><img class="image-preview favicon-image-preview" id="favicon-image-preview" alt="Prévia do favicon" hidden></div>
+                                <div class="brand-upload-grid">
+                  <section class="brand-upload-card">
+                    <label class="field-label" for="hero-image">Imagem de destaque</label>
+                    <div class="brand-upload-preview hero-upload-frame"><img class="hero-image-preview" id="hero-image-preview" alt="Prévia do banner" hidden></div>
+                    <input id="hero-image" type="file" accept="image/jpeg,image/png,image/webp">
+                    <span class="input-hint">JPG, PNG ou WebP · até 2 MB.</span>
+                    <input id="hero-image-url" type="hidden">
+                  </section>
+                  <section class="brand-upload-card">
+                    <label class="field-label" for="favicon-image">Ícone da aba (favicon)</label>
+                    <div class="brand-upload-preview favicon-upload-frame"><img class="favicon-image-preview" id="favicon-image-preview" alt="Prévia do favicon" hidden></div>
+                    <input id="favicon-image" type="file" accept="image/png">
+                    <span class="input-hint">PNG quadrado · até 2 MB.</span>
+                    <input id="favicon-image-url" type="hidden">
+                  </section>
                 </div>
                 <button class="primary-button" type="submit">Salvar aparência</button>
               </form>
@@ -118,6 +130,6 @@
       <footer class="admin-footer"><a href="/">← Voltar à loja</a><span>MOVO · Área administrativa protegida</span></footer>
     </main>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="/pwa.js" type="module"></script>
+    <script src="/pwa.js?v=20261030-5" type="module"></script>
   </body>
 </html>
