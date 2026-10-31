@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3eee7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Sabor Brasileiro">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="description" content="Painel administrativo do cardápio Sabor Brasileiro.">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <title>Painel · Sabor Brasileiro</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/admin.js" type="module"></script>
+  </head>
+  <body class="admin-body">
+    <div class="ambient ambient-one" aria-hidden="true"></div><div class="ambient ambient-two" aria-hidden="true"></div>
+    <main class="admin-shell wrap">
+      <header class="site-header glass-panel admin-topbar">
+        <a class="brand-lockup" href="/"><img class="brand-logo" src="/images/logo.png" alt="" width="52" height="52"><span class="brand-copy"><strong>Sabor Brasileiro</strong><small>PAINEL DO ADMINISTRADOR</small></span></a>
+        <a class="quiet-link" href="/">Ver cardápio ↗</a>
+      </header>
+
+      <section class="login-card glass-panel" id="login-card">
+        <p class="eyebrow">ÁREA RESTRITA</p><h1>Bem-vindo de volta.</h1><p class="subtle-copy">Entre para cuidar do seu cardápio.</p>
+        <form id="login-form" class="stack-form">
+          <label class="field-label" for="login-username">Usuário</label><input id="login-username" name="username" autocomplete="username" required maxlength="32">
+          <label class="field-label" for="login-password">Senha</label><input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="1024">
+          <p class="form-error" id="login-error" role="alert"></p><button class="primary-button full-width" type="submit">Entrar no painel</button>
+        </form>
+      </section>
+
+      <section class="dashboard" id="dashboard" hidden>
+        <div class="dashboard-intro" id="dashboard-intro"><div><p class="eyebrow" id="dashboard-eyebrow">GESTÃO DO CARDÁPIO</p><h1 id="dashboard-title">Um sabor de cada vez.</h1><p class="subtle-copy" id="dashboard-description">Atualize o menu que seus clientes veem no link.</p></div><div class="dashboard-actions"><button class="secondary-button" id="show-password-button" type="button">Alterar senha</button><button class="secondary-button" id="logout-button" type="button">Sair do painel</button></div></div>
+        <div class="dashboard-grid" id="dashboard-content">
+          <section class="glass-panel admin-card settings-card">
+            <div class="admin-card-heading"><div><p class="eyebrow">SUA LANCHONETE</p><h2>Informações</h2></div></div>
+            <form id="settings-form" class="stack-form compact-form">
+              <label class="field-label" for="restaurant-name">Nome</label><input id="restaurant-name" maxlength="80" required>
+              <label class="field-label" for="restaurant-whatsapp">WhatsApp com DDI e DDD</label><input id="restaurant-whatsapp" inputmode="tel" placeholder="5511999999999" maxlength="18"><span class="input-hint">Exemplo: 55 + DDD + número, somente dígitos.</span>
+              <label class="field-label" for="restaurant-hours">Horários</label><textarea id="restaurant-hours" rows="3" maxlength="500" placeholder="Seg a sáb · 18h às 23h"></textarea>
+              <button class="secondary-button" type="submit">Salvar informações</button>
+            </form>
+          </section>
+
+          <section class="glass-panel admin-card categories-card">
+            <div class="admin-card-heading"><div><p class="eyebrow">ORGANIZAÇÃO</p><h2>Categorias</h2></div></div>
+            <form id="category-form" class="inline-form"><input id="category-name" aria-label="Nova categoria" placeholder="Ex.: Hambúrgueres" maxlength="60" required><button class="icon-add" type="submit" aria-label="Adicionar categoria">+</button></form>
+            <ul class="category-admin-list" id="category-admin-list"></ul>
+          </section>
+
+          <section class="glass-panel admin-card products-card">
+            <div class="admin-card-heading product-list-heading"><div><p class="eyebrow">SEU MENU</p><h2>Produtos <span class="count-pill" id="product-count">0</span></h2></div><button class="primary-button compact-button" id="new-product-button" type="button">+ Novo produto</button></div>
+            <div class="admin-product-list" id="admin-product-list"></div>
+          </section>
+
+          <section class="glass-panel admin-card product-editor" id="product-editor" hidden>
+            <div class="admin-card-heading"><div><p class="eyebrow">DETALHES DO MENU</p><h2 id="editor-title">Novo produto</h2></div><button class="icon-button" id="close-editor" type="button" aria-label="Fechar editor">×</button></div>
+            <form id="product-form" class="stack-form compact-form">
+              <input id="product-id" type="hidden">
+              <label class="field-label" for="product-name">Nome do produto</label><input id="product-name" maxlength="100" required>
+              <label class="field-label" for="product-description">Descrição</label><textarea id="product-description" rows="2" maxlength="500" placeholder="Conte o que deixa esse sabor especial"></textarea>
+              <label class="field-label" for="product-price">Preço (R$)</label><input id="product-price" inputmode="decimal" placeholder="24,90" required>
+              <div class="toggle-row"><label for="product-price-on-request">Preço sob consulta</label><input id="product-price-on-request" type="checkbox"></div>
+              <label class="field-label" for="product-category">Categoria</label><select id="product-category"><option value="">Sem categoria</option></select>
+              <div class="upload-row"><label class="field-label" for="product-image">Foto do produto</label><input id="product-image" type="file" accept="image/jpeg,image/png,image/webp"><input id="product-image-url" type="hidden"><img class="image-preview" id="image-preview" alt="Prévia da foto" hidden></div>
+              <div class="toggle-row"><label for="product-available">Disponível para pedidos</label><input id="product-available" type="checkbox" checked></div>
+              <div class="editor-subsection"><div class="subsection-heading"><h3>Escolhas e adicionais</h3><button class="text-button" id="add-group-button" type="button">+ Adicionar grupo</button></div><p class="input-hint">Ex.: escolha o tamanho, adicione queijo. Cada grupo pode ser obrigatório e as opções podem alterar o preço.</p><div id="modifier-groups"></div></div>
+              <div class="editor-subsection"><label class="field-label" for="product-removals">Ingredientes que podem ser removidos</label><textarea id="product-removals" rows="2" placeholder="Cebola&#10;Picles"></textarea><span class="input-hint">Uma opção por linha.</span></div>
+              <p class="form-error" id="product-error" role="alert"></p>
+              <div class="editor-actions"><button class="secondary-button" id="cancel-product" type="button">Cancelar</button><button class="primary-button" type="submit">Salvar produto</button></div>
+            </form>
+          </section>
+        </div>
+      </section>
+      <dialog class="name-dialog password-dialog" id="password-dialog">
+        <form id="password-form" class="stack-form">
+          <p class="eyebrow">CONTA ADMINISTRATIVA</p><h2 id="password-title">Alterar senha</h2><p class="subtle-copy" id="password-description">Use uma senha exclusiva com pelo menos 14 caracteres.</p>
+          <label class="field-label" for="current-password">Senha atual</label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required maxlength="1024">
+          <label class="field-label" for="new-password">Nova senha</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+          <label class="field-label" for="confirm-password">Confirme a nova senha</label><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+          <p class="form-error" id="password-error" role="alert"></p><div class="dialog-actions"><button class="secondary-button" id="cancel-password" type="button">Cancelar</button><button class="secondary-button" id="logout-first-access" type="button" hidden>Sair</button><button class="primary-button" type="submit">Salvar nova senha</button></div>
+        </form>
+      </dialog>
+      <footer class="site-footer admin-footer"><a href="/">Voltar ao cardápio</a><span>Área administrativa protegida</span></footer>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/pwa.js" type="module"></script>
+  </body>
+</html>
