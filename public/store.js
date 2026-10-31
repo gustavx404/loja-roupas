@@ -9,7 +9,7 @@ const products = [
   {id:8,name:'Short Everyday',category:'Casual',price:129,tag:'',color:'#b5a68d',image:'/images/products/shorts.webp',desc:'Conforto todo dia · Natural',sizes:['P','M','G','GG']}
 ];
 const money = n => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
-const cart=[]; let filter='Tudo', selectedProduct=null, selectedSize='';
+const cart=[]; let filter='Tudo', selectedProduct=null, selectedSize='', storeWhatsapp='';
 const filters=['Tudo','Casual','Treino'];
 const filterNode=document.querySelector('#filters'), productsNode=document.querySelector('#products');
 const sizeDialog=document.querySelector('#size-dialog'), sizeOptions=document.querySelector('#size-options');
@@ -25,5 +25,26 @@ document.querySelector('#size-confirm').addEventListener('click',addSelectedToCa
 document.querySelector('#bag-open').onclick=()=>document.body.classList.add('bag-open');document.querySelector('#bag-close').onclick=()=>document.body.classList.remove('bag-open');document.querySelector('#overlay').onclick=()=>document.body.classList.remove('bag-open');
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.body.classList.remove('bag-open')});
 document.querySelector('#bag-items').addEventListener('click',e=>{const button=e.target.closest('[data-remove]');if(button){cart.splice(Number(button.dataset.remove),1);drawCart()}});
-document.querySelector('#checkout').onclick=()=>{const lines=cart.map(i=>`${i.qty}x ${i.product.name} — tamanho ${i.size}: ${money(i.qty*i.product.price)}`).join('\n');const total=cart.reduce((s,i)=>s+i.product.price*i.qty,0);window.open(`https://wa.me/?text=${encodeURIComponent(`Oi! Quero fazer este pedido:\n${lines}\nTotal: ${money(total)}`)}`,'_blank','noopener')};
+document.querySelector('#checkout').onclick=()=>{const lines=cart.map(i=>`${i.qty}x ${i.product.name} — tamanho ${i.size}: ${money(i.qty*i.product.price)}`).join('\n');const total=cart.reduce((s,i)=>s+i.product.price*i.qty,0);window.open(`https://wa.me/${storeWhatsapp}?text=${encodeURIComponent(`Oi! Quero fazer este pedido:\n${lines}\nTotal: ${money(total)}`)}`,'_blank','noopener')};
 document.querySelectorAll('[data-filter-link]').forEach(a=>a.addEventListener('click',()=>{filter=a.dataset.filterLink;drawFilters();drawProducts()}));document.querySelector('#year').textContent=new Date().getFullYear();drawFilters();drawProducts();drawCart();
+
+async function loadStoreAppearance(){
+  try{
+    const response=await fetch('/api/menu',{cache:'no-store'});
+    if(!response.ok)return;
+    const {restaurant}=await response.json();
+    if(!restaurant)return;
+    if(restaurant.name){document.querySelectorAll('.logo').forEach(logo=>{if(logo.firstChild)logo.firstChild.nodeValue=restaurant.name})}
+    if(restaurant.whatsapp)storeWhatsapp=restaurant.whatsapp.replace(/\D/g,'');
+    if(restaurant.name)document.title=`${restaurant.name} — movimento é seu`;
+    if(restaurant.announcement)document.querySelector('#announcement').textContent=restaurant.announcement;
+    if(restaurant.heroTitle)document.querySelector('#hero-title').textContent=restaurant.heroTitle;
+    if(restaurant.heroDescription)document.querySelector('#hero-description').textContent=restaurant.heroDescription;
+    if(restaurant.heroImageUrl)document.querySelector('.hero-photo').src=restaurant.heroImageUrl;
+    if(restaurant.faviconUrl){
+      const favicon=`${restaurant.faviconUrl}${restaurant.faviconUrl.includes('?')?'&':'?'}v=${encodeURIComponent(restaurant.faviconUrl)}`;
+      document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach(link=>{link.href=favicon});
+    }
+  }catch{}
+}
+loadStoreAppearance();

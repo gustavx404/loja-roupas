@@ -45,6 +45,15 @@ async function loadCatalog() {
   $('#restaurant-name').value = state.catalog.restaurant.name;
   $('#restaurant-whatsapp').value = state.catalog.restaurant.whatsapp;
   $('#restaurant-hours').value = state.catalog.restaurant.hours;
+  $('#announcement-text').value = state.catalog.restaurant.announcement ?? '';
+  $('#hero-title-text').value = state.catalog.restaurant.heroTitle ?? '';
+  $('#hero-description-text').value = state.catalog.restaurant.heroDescription ?? '';
+  $('#hero-image-url').value = state.catalog.restaurant.heroImageUrl ?? '';
+  $('#favicon-image-url').value = state.catalog.restaurant.faviconUrl ?? '';
+  $('#hero-image-preview').src = state.catalog.restaurant.heroImageUrl ?? '';
+  $('#hero-image-preview').hidden = !state.catalog.restaurant.heroImageUrl;
+  $('#favicon-image-preview').src = state.catalog.restaurant.faviconUrl ?? '';
+  $('#favicon-image-preview').hidden = !state.catalog.restaurant.faviconUrl;
   renderCategories();
   renderProducts();
 }
@@ -154,13 +163,15 @@ function updateImagePreview(url) {
   image.src = url || '';
 }
 
-async function uploadImage(file) {
+async function uploadImage(file, urlSelector = '#product-image-url', previewSelector = '#image-preview') {
   if (!file) return;
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new Error('Escolha uma imagem JPG, PNG ou WebP.');
   if (file.size > 2 * 1024 * 1024) throw new Error('A imagem deve ter no máximo 2 MB.');
   const body = await api('/api/admin/media', { method: 'POST', headers: { 'Content-Type': file.type }, body: file });
-  $('#product-image-url').value = body.imageUrl;
-  updateImagePreview(body.imageUrl);
+  $(urlSelector).value = body.imageUrl;
+  const preview = $(previewSelector);
+  preview.src = body.imageUrl;
+  preview.hidden = false;
 }
 
 $('#login-form').addEventListener('submit', async (event) => {
@@ -254,11 +265,26 @@ $('#password-form').addEventListener('submit', async (event) => {
 $('#settings-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   state.catalog.restaurant = {
+    ...state.catalog.restaurant,
     name: $('#restaurant-name').value.trim(),
     whatsapp: $('#restaurant-whatsapp').value.replace(/\D/g, ''),
     hours: $('#restaurant-hours').value.trim(),
   };
   try { await saveCatalog('Informações atualizadas.'); } catch (error) { toast(error.message); }
+});
+
+$('#appearance-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  state.catalog.restaurant = {
+    ...state.catalog.restaurant,
+    announcement: $('#announcement-text').value.trim(),
+    heroTitle: $('#hero-title-text').value.trim(),
+    heroDescription: $('#hero-description-text').value.trim(),
+    heroImageUrl: $('#hero-image-url').value || '/images/hero-set.png',
+    faviconUrl: $('#favicon-image-url').value || '/favicon.svg',
+  };
+  try { await saveCatalog('Aparência atualizada.'); }
+  catch (error) { toast(error.message); }
 });
 
 $('#category-form').addEventListener('submit', async (event) => {
@@ -327,6 +353,21 @@ $('#product-image').addEventListener('change', async (event) => {
     toast(error.message);
   }
 });
+
+for (const [inputSelector, urlSelector, previewSelector, label] of [
+  ['#hero-image', '#hero-image-url', '#hero-image-preview', 'Imagem de destaque enviada. Salve a aparência para aplicar.'],
+  ['#favicon-image', '#favicon-image-url', '#favicon-image-preview', 'Favicon enviado. Salve a aparência para aplicar.'],
+]) {
+  $(inputSelector).addEventListener('change', async (event) => {
+    try {
+      await uploadImage(event.currentTarget.files[0], urlSelector, previewSelector);
+      toast(label);
+    } catch (error) {
+      event.currentTarget.value = '';
+      toast(error.message);
+    }
+  });
+}
 
 $('#product-form').addEventListener('submit', async (event) => {
   event.preventDefault();

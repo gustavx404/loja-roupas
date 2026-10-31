@@ -10,6 +10,11 @@ export function emptyCatalog() {
       name: 'MOVO',
       whatsapp: '',
       hours: '',
+      announcement: 'FRETE GRÁTIS em compras acima de R$ 299',
+      heroTitle: 'Do seu jeito. No seu ritmo.',
+      heroDescription: 'Do treino ao resto do dia. Peças confortáveis, versáteis e prontas para acompanhar você.',
+      heroImageUrl: '/images/hero-set.png',
+      faviconUrl: '/favicon.svg',
     },
     categories: [],
     products: [],
@@ -30,7 +35,19 @@ export function normalizeCatalog(input) {
     name: input.restaurant.name.trim(),
     whatsapp,
     hours: (input.restaurant.hours ?? '').trim(),
+    announcement: (input.restaurant.announcement ?? 'FRETE GRÁTIS em compras acima de R$ 299').trim(),
+    heroTitle: (input.restaurant.heroTitle ?? 'Do seu jeito. No seu ritmo.').trim(),
+    heroDescription: (input.restaurant.heroDescription ?? 'Do treino ao resto do dia. Peças confortáveis, versáteis e prontas para acompanhar você.').trim(),
+    heroImageUrl: (input.restaurant.heroImageUrl ?? '/images/hero-set.png').trim(),
+    faviconUrl: (input.restaurant.faviconUrl ?? '/favicon.svg').trim(),
   };
+  if (!optionalText(restaurant.announcement, 140) || !text(restaurant.heroTitle, 100) || !optionalText(restaurant.heroDescription, 300)) {
+    throw new Error('Confira os textos de apresentação da loja.');
+  }
+  const safeAssetPath = (value) => /^\/(?:media\/[\w.-]+|images\/[\w./-]+|favicon\.svg)$/.test(value) && !/(?:^|\/)\.\.(?:\/|$)/.test(value);
+  if (!safeAssetPath(restaurant.heroImageUrl) || !safeAssetPath(restaurant.faviconUrl)) {
+    throw new Error('As imagens da loja precisam ser enviadas pelo painel.');
+  }
 
   if (!Array.isArray(input.categories) || input.categories.length > 40 || input.products.length > 300) {
     throw new Error('O cardápio excede os limites permitidos.');

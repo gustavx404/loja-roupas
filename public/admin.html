@@ -12,8 +12,8 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <title>Painel · MOVO</title>
     <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/admin-movo.css">
-    <script src="/admin.js?v=20261030-2" type="module"></script>
+    <link rel="stylesheet" href="/admin-movo.css?v=20261030-3">
+    <script src="/admin.js?v=20261030-3" type="module"></script>
   </head>
   <body class="admin-body">
     <main class="admin-shell">
@@ -40,7 +40,8 @@
           <p class="sidebar-label">MENU DA LOJA</p>
           <a class="sidebar-link active" href="#admin-product-list"><span>▦</span>Produtos</a>
           <a class="sidebar-link" href="#category-admin-list"><span>◫</span>Categorias</a>
-          <a class="sidebar-link" href="#settings-form"><span>⚙</span>Configurações</a>
+          <a class="sidebar-link" href="#appearance-settings"><span>✦</span>Aparência</a>
+          <a class="sidebar-link" href="#store-settings"><span>⚙</span>Configurações</a>
           <div class="sidebar-bottom"><span class="secure-badge">● &nbsp;Painel protegido</span><a class="sidebar-link" href="/">↗ &nbsp; Ver loja</a></div>
         </aside>
 
@@ -55,6 +56,21 @@
                 <label class="field-label" for="restaurant-whatsapp">WhatsApp para pedidos</label><input id="restaurant-whatsapp" inputmode="tel" placeholder="5511999999999" maxlength="18"><span class="input-hint">DDI + DDD + número, somente dígitos.</span>
                 <label class="field-label" for="restaurant-hours">Informações de entrega</label><textarea id="restaurant-hours" rows="3" maxlength="500" placeholder="Ex.: Enviamos para todo o Brasil"></textarea>
                 <button class="secondary-button" type="submit">Salvar informações</button>
+              </form>
+            </section>
+
+            <section class="admin-card appearance-card" id="appearance-settings">
+              <div class="admin-card-heading"><div><p class="eyebrow">IDENTIDADE VISUAL</p><h2>Aparência do site</h2></div><span class="section-icon">✦</span></div>
+              <p class="section-description">Edite a apresentação da página inicial e suas imagens.</p>
+              <form id="appearance-form" class="stack-form compact-form">
+                <label class="field-label" for="announcement-text">Aviso no topo da loja</label><input id="announcement-text" maxlength="140" placeholder="Ex.: Frete grátis acima de R$ 299">
+                <label class="field-label" for="hero-title-text">Título principal</label><input id="hero-title-text" maxlength="100" required>
+                <label class="field-label" for="hero-description-text">Texto de apresentação</label><textarea id="hero-description-text" rows="3" maxlength="300"></textarea>
+                <div class="brand-upload-grid">
+                  <div class="upload-row"><label class="field-label" for="hero-image">Imagem de destaque</label><input id="hero-image" type="file" accept="image/jpeg,image/png,image/webp"><span class="input-hint">JPG, PNG ou WebP · máximo 2 MB.</span><input id="hero-image-url" type="hidden"><img class="image-preview hero-image-preview" id="hero-image-preview" alt="Prévia do destaque" hidden></div>
+                  <div class="upload-row"><label class="field-label" for="favicon-image">Favicon da loja</label><input id="favicon-image" type="file" accept="image/png,image/jpeg,image/webp"><span class="input-hint">PNG recomendado · máximo 2 MB.</span><input id="favicon-image-url" type="hidden"><img class="image-preview favicon-image-preview" id="favicon-image-preview" alt="Prévia do favicon" hidden></div>
+                </div>
+                <button class="primary-button" type="submit">Salvar aparência</button>
               </form>
             </section>
 
