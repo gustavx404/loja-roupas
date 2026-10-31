@@ -13,7 +13,7 @@
     <title>Painel · MOVO</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/admin-movo.css">
-    <script src="/admin.js" type="module"></script>
+    <script src="/admin.js?v=20261030-2" type="module"></script>
   </head>
   <body class="admin-body">
     <main class="admin-shell">
@@ -93,6 +93,7 @@
       </section>
       <dialog class="name-dialog password-dialog" id="password-dialog"><form id="password-form" class="stack-form">
         <p class="eyebrow">CONTA ADMINISTRATIVA</p><h2 id="password-title">Alterar senha</h2><p class="subtle-copy" id="password-description">Use uma senha exclusiva com pelo menos 14 caracteres.</p>
+        <button class="text-button session-refresh" id="refresh-password-status" type="button" hidden>Já troquei a senha · verificar acesso</button>
         <label class="field-label" for="current-password">Senha atual</label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required maxlength="1024">
         <label class="field-label" for="new-password">Nova senha</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
         <label class="field-label" for="confirm-password">Confirme a nova senha</label><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">

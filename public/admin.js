@@ -5,7 +5,7 @@ const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL
 const state = { catalog: null, administrator: null };
 
 async function api(path, options = {}) {
-  const response = await fetch(path, { credentials: 'same-origin', ...options });
+  const response = await fetch(path, { credentials: 'same-origin', cache: 'no-store', ...options });
   const body = response.headers.get('content-type')?.includes('application/json') ? await response.json() : null;
   if (!response.ok) throw Object.assign(new Error(body?.error ?? 'Não foi possível concluir a operação.'), { status: response.status });
   return body;
@@ -34,6 +34,7 @@ function setSignedIn(account) {
   $('#password-description').textContent = mustChangePassword ? 'A senha inicial só serve para este primeiro acesso. Defina uma senha exclusiva com pelo menos 14 caracteres. Depois, apague data/admin-initial-credentials.json.' : 'Use uma senha exclusiva com pelo menos 14 caracteres.';
   $('#cancel-password').hidden = mustChangePassword;
   $('#logout-first-access').hidden = !mustChangePassword;
+  $('#refresh-password-status').hidden = !mustChangePassword;
   if (mustChangePassword && !$('#password-dialog').open) $('#password-dialog').showModal();
   if (!isSignedIn && $('#password-dialog').open) $('#password-dialog').close();
   if (isSignedIn && !mustChangePassword) loadCatalog().catch((error) => toast(error.message));
@@ -203,6 +204,23 @@ $('#logout-first-access').addEventListener('click', async () => {
     setSignedIn(null);
   } catch (error) {
     toast(error.message);
+  }
+});
+
+$('#refresh-password-status').addEventListener('click', async (event) => {
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const session = await api('/api/admin/session');
+    if (session.administrator) setSignedIn(session);
+    else {
+      setSignedIn(null);
+      toast('Sua sessão expirou. Entre novamente.');
+    }
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    button.disabled = false;
   }
 });
 
