@@ -9,3 +9,9 @@
   from = "/admin"
   to = "/admin.html"
   status = 200
+
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.svg"
+  status = 301
+  force = true
